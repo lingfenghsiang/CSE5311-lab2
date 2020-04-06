@@ -333,3 +333,4 @@ float CPUtime()
     getrusage(RUSAGE_SELF, &rusage);
     return rusage.ru_utime.tv_sec + rusage.ru_utime.tv_usec / 1000000.0 + rusage.ru_stime.tv_sec + rusage.ru_stime.tv_usec / 1000000.0;
 }
+

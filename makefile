@@ -1,5 +1,5 @@
 CC=g++
-FLAG=-g
+FLAG=-g -w
 target:
 	$(CC) $(FLAG) capacityScaling.cpp -o test
 clean:

@@ -63,7 +63,7 @@ int main(void)
     int head, tail, capacity;
     int vertexNum, edgeNum;
     float startCPU, stopCPU;
-    cout << "Please input the number of vertices and edges first" << endl;
+    cout << "Please input the number of vertices and edges first, then information about the edges" << endl;
     cin >> vertexNum >> edgeNum;
     Graph inputData(vertexNum);
     for (int i = 0; i < edgeNum; i++)
@@ -221,6 +221,7 @@ void Graph::findMaxFlow(int source, int sink)
 {
     // find the largest capacity edge of the source node
     int maxSrcEdgeCapacity = 0, delta = 0, findFlag = 0, augmentingPathNum = 0;
+    float timer1=0, timer1Start, timer1End, timer2=0, timer2Start, timer2End, timer3=0;
     maxFlow = 0;
     queue<int> nodesToVisit;
     vector<int> flowTraceBack(nodeNum, -1);
@@ -254,17 +255,25 @@ void Graph::findMaxFlow(int source, int sink)
                 cout << "problem" << endl;
             // if not the end, push into the queue
             if (currentPlace != sink)
+            {
+                timer1Start = CPUtime();
                 for (int i = 0; i < contents[currentPlace].connectedEdgeNum; i++)
                 {
                     if (visitedSet[contents[currentPlace].connectedEdges[i].head] == 0 &&
                         contents[currentPlace].connectedEdges[i].capacity >= delta)
                     {
+                 
                         flowTraceBack[contents[currentPlace].connectedEdges[i].head] = currentPlace;
                         nodesToVisit.push(contents[currentPlace].connectedEdges[i].head);
+                   
                     }
                 }
+                timer1End = CPUtime();
+                timer1 += (timer1End - timer1Start);
+            }
             else if (currentPlace == sink)
             {
+                timer2Start = CPUtime();
                 // an augmenting path is found, traceback
                 int trace = currentPlace;
                 augmentingPathNum += 1;
@@ -304,6 +313,8 @@ void Graph::findMaxFlow(int source, int sink)
                 nodesToVisit.push(source);
                 findFlag = 1;
                 maxFlow += minCapacityOnPath;
+                timer2End = CPUtime();
+                timer2 += (timer2End - timer2Start);
             }
             // find new augmenting path
             if (findFlag == 1)
@@ -326,6 +337,9 @@ void Graph::findMaxFlow(int source, int sink)
     }
     cout << augmentingPathNum << " augmenting paths" << endl;
     cout << "the maximum flow is " << maxFlow << endl;
+    cout << "To clarify,";
+    cout << "the queue time is " << timer1 << ", ";
+    cout << "the rest of algorithm time is " << timer2 << endl;
 }
 float CPUtime()
 {
